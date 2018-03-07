@@ -7,15 +7,15 @@ export default class Board extends Component {
   constructor() {
     super()
     this.state = {
-      grid: []
+      grid: [],
     }
   }
 
   componentDidMount() {
-    this.buildGrid()
+    this.buildGameGrid()
   }
 
-  buildGrid() {
+  buildGameGrid() {
     let grid = []
     let row = []
 
@@ -31,7 +31,7 @@ export default class Board extends Component {
     this.setState({grid: grid})
   }
 
-  renderGrid() {
+  renderGameGrid() {
     return this.state.grid.map((row, i) => {
       return (
         <View key={i} style={{flexDirection: 'row'}}>
@@ -47,10 +47,14 @@ export default class Board extends Component {
     })
   }
 
+  getTetrimo() {
+
+  }
+
   render() {
     return (
       <View style={ styles.container }>
-        { this.renderGrid() }
+        { this.renderGameGrid() }
       </View>
     )
   }

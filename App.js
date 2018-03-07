@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import { Board } from './Components'
+import { Board, Tetrimo } from './Components'
 
 
 class Menu extends Component {
@@ -13,6 +13,11 @@ class Menu extends Component {
           title='play'
           onPress={() => {
             this.props.navigation.navigate('Game')}}
+        />
+        <Button
+          title='shape'
+          onPress={() => {
+            this.props.navigation.navigate('Shape')}}
         />
       </View>
     )
@@ -29,6 +34,16 @@ class Game extends Component {
   }
 }
 
+class Shape extends Component {
+  render() {
+    return(
+      <View style={ styles.container }>
+        <Tetrimo shape={'L'} rotation={3} />
+      </View>
+    )
+  }
+}
+
 const RootStack = StackNavigator({
   Menu: {
     screen: Menu
@@ -36,6 +51,9 @@ const RootStack = StackNavigator({
   Game: {
     screen: Game
   },
+  Shape: {
+    screen: Shape
+  }
 }, {
   initialRouteName: 'Menu'
 })

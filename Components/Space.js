@@ -32,18 +32,18 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: '#ffffff',
     borderColor: '#000000',
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderStyle: 'solid'
   },
   full: {
     flex: 0,
     alignItems: 'center',
     justifyContent: 'center',
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
     backgroundColor: '#777777',
     borderColor: '#000000',
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderStyle: 'solid'
   },
 })
