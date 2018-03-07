@@ -19,8 +19,8 @@ export default class Board extends Component {
     let grid = []
     let row = []
 
-    for (var height = 1; height < 20; height++) {
-      for (var width = 1; width < 10; width++) {
+    for (var height = 0; height < 20; height++) {
+      for (var width = 0; width < 10; width++) {
         let space = 0
         row.push(space)
       }
@@ -38,7 +38,7 @@ export default class Board extends Component {
         {
           row.map((cell, j) => {
             return (
-              <Space key={j} open={true} />
+              <Space key={j} open={true} coords={[j, i]} />
             )
           })
         }
