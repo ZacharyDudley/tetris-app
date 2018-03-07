@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import { Board, Space } from './Components'
+import { Board } from './Components'
 
 
 class Menu extends Component {
@@ -13,11 +13,6 @@ class Menu extends Component {
           title='play'
           onPress={() => {
             this.props.navigation.navigate('Game')}}
-        />
-        <Button
-          title='space'
-          onPress={() => {
-            this.props.navigation.navigate('Cell')}}
         />
       </View>
     )
@@ -34,16 +29,6 @@ class Game extends Component {
   }
 }
 
-class Cell extends Component {
-  render() {
-    return (
-      <View style={ styles.container }>
-        <Space open={true} />
-      </View>
-    )
-  }
-}
-
 const RootStack = StackNavigator({
   Menu: {
     screen: Menu
@@ -51,9 +36,6 @@ const RootStack = StackNavigator({
   Game: {
     screen: Game
   },
-  Cell: {
-    screen: Cell
-  }
 }, {
   initialRouteName: 'Menu'
 })
