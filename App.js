@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import { Board } from './Board'
+import { Board } from './Components'
 
 
 class Menu extends Component {
@@ -35,7 +35,7 @@ const RootStack = StackNavigator({
   },
   Game: {
     screen: Game
-  }
+  },
 }, {
   initialRouteName: 'Menu'
 })
