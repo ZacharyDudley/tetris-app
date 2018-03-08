@@ -8,7 +8,10 @@ export default class Board extends Component {
     super()
     this.state = {
       grid: [],
+      tetrimoQueue: []
     }
+
+    this.styleGrid = {backgroundColor: '#ffffff', borderStyle: 'solid', borderWidth: 1}
   }
 
   componentDidMount() {
@@ -32,13 +35,14 @@ export default class Board extends Component {
   }
 
   renderGameGrid() {
-    return this.state.grid.map((row, i) => {
+    return this.state.grid.map((row, y) => {
       return (
-        <View key={i} style={{flexDirection: 'row'}}>
+        <View key={y} style={{flexDirection: 'row'}}>
         {
-          row.map((cell, j) => {
+          row.map((cell, x) => {
             return (
-              <Space key={j} open={true} coords={[j, i]} />
+              <Space key={`${x}, ${y}`} style={ this.styleGrid } />
+              // <Space key={j} open={true} coords={[j, i]} />
             )
           })
         }
@@ -47,8 +51,39 @@ export default class Board extends Component {
     })
   }
 
-  getTetrimo() {
+  isSpaceFull(xCoord, yCoord) {
+    let spaceIsFull
 
+    if (this.state.grid[yCoord][xCoord] === 0) {
+      spaceIsFull = false
+    } else {
+      spaceIsFull = true
+    }
+
+    return spaceIsFull
+  }
+
+  fillTetrimoQueue() {
+    const { tetrimoQueue } = this.state
+    let tetrimoShapes = ['Z', 'S', 'L', 'J', 'T', 'I', 'O']
+    let randomTetrimoType = tetrimoShapes[Math.floor(Math.random(0, tetrimoShapes.length) + 1)]
+    let nextId = tetrimoQueue[tetrimoQueue.length - 1].id++ || 0
+
+    while (tetrimoQueue.length < 3) {
+      tetrimoQueue.push({shape: randomTetrimoType, id: nextId, rotation: 0})
+    }
+  }
+
+  dropTetrimo() {
+    let currentTetrimo = this.state.tetrimoQueue.shift()
+  }
+
+  canMoveDown(tetrimoBlocks) {
+    for (let i = 0; i < tetrimoBlocks.length; i++) {
+      if (this.isSpaceFull(tetrimoBlocks[i].xCoord, tetrimoBlocks[i].yCoord + 1)) {
+        return false
+      }
+    }
   }
 
   render() {
@@ -66,5 +101,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  }
 })

@@ -9,8 +9,12 @@ export default class Tetrimo extends Component {
     this.state = {
       grid: [],
       shape: props.shape,
-      rotation: props.rotation
+      rotation: props.rotation,
+      id: props.id
     }
+
+    this.styleEmpty = {backgroundColor: '#ffffff'}
+    this.styleFull = {backgroundColor: '#777777', borderStyle: 'solid', borderWidth: 2}
   }
 
   componentDidMount() {
@@ -138,13 +142,14 @@ export default class Tetrimo extends Component {
   }
 
   renderTetrimoGrid() {
-    return this.state.grid.map((row, i) => {
+    return this.state.grid.map((row, y) => {
       return (
-        <View key={i} style={{flexDirection: 'row'}}>
+        <View key={y} style={{flexDirection: 'row'}}>
         {
-          row.map((cell, j) => {
+          row.map((cell, x) => {
             return (
-              cell === 1 ? <Space open={false} coords={[j, i]} /> : <Space open={true} coords={[j, i]} />
+              cell === 1 ? <Space key={this.state.id} style={ this.styleFull } /> : <Space key={this.state.id} style={this.styleEmpty} />
+              // cell === 1 ? <Space open={false} coords={[x, y]} /> : <Space open={true} coords={[x, y]} />
             )
           })
         }
@@ -169,26 +174,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  open: {
-    flex: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 30,
-    height: 30,
-    backgroundColor: '#ffffff',
-    borderColor: '#000000',
-    borderWidth: 1,
-    borderStyle: 'solid'
-  },
-  full: {
-    flex: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 20,
-    height: 20,
-    backgroundColor: '#777777',
-    borderColor: '#000000',
-    borderWidth: 1,
-    borderStyle: 'solid'
-  },
+  // open: {
+  //   flex: 0,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   width: 30,
+  //   height: 30,
+  //   backgroundColor: '#ffffff',
+  //   borderColor: '#000000',
+  //   borderWidth: 1,
+  //   borderStyle: 'solid'
+  // },
+  // full: {
+  //   flex: 0,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   width: 20,
+  //   height: 20,
+  //   backgroundColor: '#777777',
+  //   borderColor: '#000000',
+  //   borderWidth: 1,
+  //   borderStyle: 'solid'
+  // },
 })
