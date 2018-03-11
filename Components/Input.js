@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import { GameBoard, Shape, Space } from '../Components'
+import { GameBoard, createTetrimo, Space } from '../Components'
 
 
 export default class Input extends Component {
@@ -9,12 +9,7 @@ export default class Input extends Component {
     this.state = {
       grid: [],
       tetrimoQueue: [],
-      tetrimo: [
-        [3, 2],
-        [4, 2],
-        [5, 2],
-        [4, 1]
-      ]
+      tetrimo: []
     }
 
     this.styleGrid = {backgroundColor: '#ffffff', borderStyle: 'solid', borderWidth: 1}
@@ -30,10 +25,10 @@ export default class Input extends Component {
     let grid = []
     let row = []
 
-    // for (var height = 0; height < 20; height++) {
-      // for (var width = 0; width < 10; width++) {
-    for (var height = 0; height < 3; height++) {
-      for (var width = 0; width < 6; width++) {
+    for (var height = 0; height < 20; height++) {
+      for (var width = 0; width < 11; width++) {
+    // for (var height = 0; height < 3; height++) {
+    //   for (var width = 0; width < 6; width++) {
         let space = 0
         row.push(space)
       }
@@ -56,33 +51,43 @@ export default class Input extends Component {
     return spaceIsFull
   }
 
-  fillTetrimoQueue() {
+  queueTetrimos() {
     const { tetrimoQueue } = this.state
     let tetrimoShapes = ['Z', 'S', 'L', 'J', 'T', 'I', 'O']
-    let nextId = 0
+    // let nextId = 0
     // let nextId = tetrimoQueue[tetrimoQueue.length - 1].id++ || 0
 
     while (tetrimoQueue.length < 3) {
       let randomTetrimoType = tetrimoShapes[Math.floor(Math.random() * tetrimoShapes.length)]
-      tetrimoQueue.push({shape: randomTetrimoType, id: nextId})
+      let newTetrimo = createTetrimo(randomTetrimoType)
+
+      this.setState({tetrimoQueue: tetrimoQueue.push(newTetrimo)})
     }
   }
 
-  setTetrimoOnGrid() {
-    let { tetrimo } = this.state
+  placeTetrimo() {
     let grid = this.state.grid
+    let tetrimo = this.state.tetrimoQueue.shift()
+    let current = tetrimo.shape[tetrimo.rotation]
 
-    for (let i = 0; i < tetrimo.length; i++) {
-      grid[tetrimo[i][1]][tetrimo[i][0]] = 1
+    // for (let i = 0; i < tetrimo.shape[0].length; i++) {
+    //   grid[tetrimo.shape[0][i][1]][tetrimo.shape[0][i][0]] = 1
+    // }
+
+    // this.setState({grid: grid, tetrimo: tetrimo})
+    for (let i = 0; i < current.length; i++) {
+      grid[current[i][1]][current[i][0]] = 1
     }
 
-    this.setState({grid: grid})
+    this.setState({grid: grid, tetrimo: tetrimo})
   }
 
-  dropTetrimo() {
-    this.fillTetrimoQueue()
-    this.setState({tetrimo: this.state.tetrimoQueue.shift()})
-    this.setTetrimoOnGrid()
+  getTetrimo() {
+    this.queueTetrimos()
+    // this.setState({tetrimo: this.state.tetrimoQueue.shift()})
+    // .then(() => {
+      this.placeTetrimo()
+    // })
   }
 
   canMoveDown() {
@@ -98,29 +103,28 @@ export default class Input extends Component {
           <TouchableOpacity
           style={styles.buttonLeft}
           onPress={() => {
-            this.dropTetrimo()
-            // console.log('LEFT')
+            this.getTetrimo()
           }} />
 
           <TouchableOpacity
           style={styles.buttonRotate}
           onPress={() => {
-            // input = 'ROTATE'
-            // console.log('ROTATE')
+
           }} />
 
           <TouchableOpacity
           style={styles.buttonRight}
           onPress={() => {
-            // input = 'RIGHT'
-            // console.log('RIGHT')
+
           }} />
         </View>
 
         <View style={styles.bottomButtons}>
           <TouchableOpacity
           style={styles.buttonDown}
-          onPress={() => this.setTetrimoOnGrid()} />
+          onPress={() => {
+
+          }} />
         </View>
       </View>
 
@@ -181,22 +185,19 @@ const styles = StyleSheet.create({
   },
   buttonRight: {
     flex: 1,
-    // backgroundColor: '#222222'
-    backgroundColor: 'rgba(100, 100, 100, 0.5)'
+    backgroundColor: 'rgba(50, 50, 50, 0.1)'
   },
   buttonLeft: {
     flex: 1,
-    // backgroundColor: '#999999'
-    backgroundColor: 'rgba(50, 50, 50, 0.5)'
+    backgroundColor: 'rgba(50, 50, 50, 0.1)'
   },
   buttonRotate: {
     flex: 1.5,
-    backgroundColor: 'rgba(200, 200, 200, 0.5)'
+    backgroundColor: 'rgba(100, 100, 100, 0.1)'
   },
   buttonDown: {
     flex: 1,
-    backgroundColor: 'rgba(200, 200, 200, 0.5)'
-    // backgroundColor: '#333333'
+    backgroundColor: 'rgba(100, 100, 100, 0.1)'
   }
 
 })
