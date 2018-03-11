@@ -8,7 +8,8 @@ export default class Board extends Component {
     super()
     this.state = {
       grid: [],
-      tetrimoQueue: []
+      tetrimoQueue: [],
+      tetrimo: {}
     }
 
     this.styleGrid = {backgroundColor: '#ffffff', borderStyle: 'solid', borderWidth: 1}
@@ -16,6 +17,7 @@ export default class Board extends Component {
 
   componentDidMount() {
     this.buildGameGrid()
+    this.dropTetrimo()
   }
 
   buildGameGrid() {
@@ -41,8 +43,8 @@ export default class Board extends Component {
         {
           row.map((cell, x) => {
             return (
-              <Space key={`${x}, ${y}`} style={ this.styleGrid } />
-              // <Space key={j} open={true} coords={[j, i]} />
+              // <Space key={`${x}, ${y}`} style={ this.styleGrid } />
+              <Space key={x} coords={[x, y]} style={ this.styleGrid } />
             )
           })
         }
@@ -66,16 +68,32 @@ export default class Board extends Component {
   fillTetrimoQueue() {
     const { tetrimoQueue } = this.state
     let tetrimoShapes = ['Z', 'S', 'L', 'J', 'T', 'I', 'O']
-    let randomTetrimoType = tetrimoShapes[Math.floor(Math.random(0, tetrimoShapes.length) + 1)]
-    let nextId = tetrimoQueue[tetrimoQueue.length - 1].id++ || 0
+    let nextId = 0
+    // let nextId = tetrimoQueue[tetrimoQueue.length - 1].id++ || 0
 
     while (tetrimoQueue.length < 3) {
-      tetrimoQueue.push({shape: randomTetrimoType, id: nextId, rotation: 0})
+      let randomTetrimoType = tetrimoShapes[Math.floor(Math.random() * tetrimoShapes.length)]
+      tetrimoQueue.push({shape: randomTetrimoType, id: nextId})
+    }
+  }
+
+  setTetrimoOnGrid() {
+    let { tetrimo } = this.state.tetrimo
+
+    for (let i = 0; i < tetrimo.grid.length; i++) {
+      for (let j = 0; j < tetrimo.grid[i].length; j++) {
+        let grid = this.state.grid
+        grid[tetrimo.grid[i][j]] = 1
+        this.setState({grid})
+      }
     }
   }
 
   dropTetrimo() {
-    let currentTetrimo = this.state.tetrimoQueue.shift()
+    this.fillTetrimoQueue()
+    this.setState({tetrimo: this.state.tetrimoQueue.shift()})
+console.log(this.state.tetrimo)
+    // this.setTetrimoOnGrid()
   }
 
   canMoveDown(tetrimoBlocks) {
@@ -87,6 +105,7 @@ export default class Board extends Component {
   }
 
   render() {
+    console.log(this.state.tetrimo)
     return (
       <View style={ styles.container }>
         { this.renderGameGrid() }
