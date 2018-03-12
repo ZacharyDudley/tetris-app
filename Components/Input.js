@@ -138,6 +138,23 @@ export default class Input extends Component {
     })
   }
 
+  rotate() {
+    let { grid } = this.state
+    let oldTetrimo = this.tetrimo.shape[this.tetrimo.rotation]
+    for (let oldBlocks = 0; oldBlocks < oldTetrimo.length; oldBlocks++) {
+      grid[oldTetrimo[oldBlocks][1]][oldTetrimo[oldBlocks][0]] = 0
+    }
+
+    this.tetrimo.rotation = ++this.tetrimo.rotation % 4
+    for (let eachBlock = 0; eachBlock < this.tetrimo.shape[this.tetrimo.rotation].length; eachBlock++) {
+      grid[this.tetrimo.shape[this.tetrimo.rotation][eachBlock][1]][this.tetrimo.shape[this.tetrimo.rotation][eachBlock][0]] = 2
+    }
+
+    this.setState({grid: grid}, () => {
+      // this.loop()
+    })
+  }
+
   canTetrimoMoveLeft() {
     let { grid } = this.state
     let rotation = this.tetrimo.shape[this.tetrimo.rotation]
@@ -180,6 +197,12 @@ export default class Input extends Component {
     return true
   }
 
+  canTetrimoRotate() {
+    let { grid } = this.state
+    let rotation = this.tetrimo.shape[++this.tetrimo.rotation % 4]
+
+  }
+
   moveTetrimoLeft() {
     if (this.canTetrimoMoveLeft()) {
       this.left()
@@ -209,6 +232,12 @@ export default class Input extends Component {
     }
   }
 
+  rotateTetrimo() {
+    if (this.canTetrimoRotate()) {
+      this.rotate()
+    }
+  }
+
   loop() {
     clearInterval(this.falling)
     this.falling = setInterval(() => {
@@ -235,7 +264,7 @@ export default class Input extends Component {
           <TouchableOpacity
           style={styles.buttonRotate}
           onPress={() => {
-
+            this.rotate()
           }} />
 
           <TouchableOpacity
