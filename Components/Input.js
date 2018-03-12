@@ -112,36 +112,91 @@ export default class Input extends Component {
     return tetrimoBlocks
   }
 
-  canTetrimoMoveLeft() {
-    let { tetrimo, grid } = this.state
-    let orientation = tetrimo.shape[tetrimo.rotation]
+  left(tetrimo) {
+    let { grid } = this.state
+    let oldTetrimo = tetrimo.shape[tetrimo.rotation]
+    for (let oldBlocks = 0; oldBlocks < oldTetrimo.length; oldBlocks++) {
+        grid[oldTetrimo[oldBlocks][1]][oldTetrimo[oldBlocks][0]] = 0
+    }
 
-    for (let i = 0; i < orientation.length; i++) {
-      let oneLeft = orientation[i][1] - 1
-      if (!grid[orientation[i][1]][orientation[i][oneLeft]] || grid[orientation[i][1]][orientation[i][oneLeft]] === 1) {
-        console.log('FALSE')
-        console.log(grid[orientation[i][1]][orientation[i][oneLeft]])
-        // return false
+    for (let eachRotation = 0; eachRotation < tetrimo.shape.length; eachRotation++) {
+      for (let eachBlock = 0; eachBlock < tetrimo.shape[eachRotation].length; eachBlock++) {
+        if (eachRotation === tetrimo.rotation) {
+          tetrimo.shape[eachRotation][eachBlock][0]--
+          grid[tetrimo.shape[eachRotation][eachBlock][1]][tetrimo.shape[eachRotation][eachBlock][0]] = 2
+        } else {
+          tetrimo.shape[eachRotation][eachBlock][0]--
+        }
       }
     }
 
-    // let newPositionGrid = grid
-    // let newPositionTetrimo = tetrimo
+    this.setState({grid: grid, tetrimo: tetrimo}, () => {
+      this.loop()
+      // this.loop(tetrimo)
+    })
+  }
 
-    // for (let eachOrientation = 0; eachOrientation < newPositionTetrimo.shape.length; eachOrientation++) {
-    //   for (let eachBlock = 0; eachBlock < newPositionTetrimo.shape[eachOrientation].length; eachBlock++) {
-    //     newPositionTetrimo.shape[eachOrientation][eachBlock][0]--
+  canTetrimoMoveLeft(tetrimo) {
+    let { grid } = this.state
+    let rotation = tetrimo.shape[tetrimo.rotation]
 
-    //     if (eachOrientation === tetrimo.rotation) {
-    //       newPositionGrid[orientation[eachBlock][1]][orientation[eachBlock][0]] = 0
-    //       // newPositionGrid[newPositionTetrimo[eachBlock][1]][newPositionTetrimo[eachBlock][0]] = 2
-    //     }
-    //   }
+    for (let eachBlock = 0; eachBlock < rotation.length; eachBlock++) {
+      let oneLeft = rotation[eachBlock][0] - 1
+      if (!grid[rotation[eachBlock][1]][rotation[eachBlock][oneLeft]] || grid[rotation[eachBlock][1]][rotation[eachBlock][oneLeft]] === 1) {
+        return false
+      }
+    }
 
-    // }
+    return true
+  }
 
-    // this.setState({grid: newPositionGrid, tetrimo: newPositionTetrimo})
-    // console.log(this.state.tetrimo)
+  moveTetrimoLeft(tetrimo) {
+    if (this.canTetrimoMoveLeft(tetrimo)) {
+      this.left(tetrimo)
+    }
+  }
+
+  right(tetrimo) {
+    let { grid } = this.state
+    let oldTetrimo = tetrimo.shape[tetrimo.rotation]
+    for (let oldBlocks = 0; oldBlocks < oldTetrimo.length; oldBlocks++) {
+        grid[oldTetrimo[oldBlocks][1]][oldTetrimo[oldBlocks][0]] = 0
+    }
+
+    for (let eachRotation = 0; eachRotation < tetrimo.shape.length; eachRotation++) {
+      for (let eachBlock = 0; eachBlock < tetrimo.shape[eachRotation].length; eachBlock++) {
+        if (eachRotation === tetrimo.rotation) {
+          tetrimo.shape[eachRotation][eachBlock][0]++
+          grid[tetrimo.shape[eachRotation][eachBlock][1]][tetrimo.shape[eachRotation][eachBlock][0]] = 2
+        } else {
+          tetrimo.shape[eachRotation][eachBlock][0]++
+        }
+      }
+    }
+
+    this.setState({grid: grid, tetrimo: tetrimo}, () => {
+      this.loop(tetrimo)
+    })
+  }
+
+  canTetrimoMoveRight(tetrimo) {
+    let { grid } = this.state
+    let rotation = tetrimo.shape[tetrimo.rotation]
+
+    for (let eachBlock = 0; eachBlock < rotation.length; eachBlock++) {
+      let oneLeft = rotation[eachBlock][0] + 1
+      if (!grid[rotation[eachBlock][1]][rotation[eachBlock][oneLeft]] || grid[rotation[eachBlock][1]][rotation[eachBlock][oneLeft]] === 1) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  moveTetrimoRight(tetrimo) {
+    if (this.canTetrimoMoveRight(tetrimo)) {
+      this.right(tetrimo)
+    }
   }
 
   down(tetrimo) {
@@ -205,13 +260,23 @@ export default class Input extends Component {
     clearInterval(this.falling)
     this.falling = setInterval(() => this.moveTetrimoDown(tetrimo), 350)
   }
+  // loop() {
+  //   clearInterval(this.falling)
+  //   this.falling = setInterval(() => this.moveTetrimoDown(this.state.tetrimo), 350)
+  // }
 
   start() {
     this.setState({playing: true})
     this.queueTetrimos()
   }
 
+  getTetrimo() {
+    return this.state.tetrimo
+  }
+
   render() {
+    const { tetrimo } = this.state
+
     return (
       <View style={styles.container}>
       <View style={styles.buttonContainer}>
@@ -219,8 +284,9 @@ export default class Input extends Component {
           <TouchableOpacity
           style={styles.buttonLeft}
           onPress={() => {
-            console.log('LEFT')
-            // this.canTetrimoMoveLeft()
+            // this.getTetrimo().then((tetrimo) => {
+              this.moveTetrimoLeft(tetrimo)
+            // })
           }} />
 
           <TouchableOpacity
