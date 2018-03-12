@@ -9,7 +9,8 @@ export default class Input extends Component {
     this.state = {
       grid: [],
       tetrimoQueue: [],
-      tetrimo: []
+      tetrimo: [],
+      playing: false,
     }
 
     this.styleGrid = {backgroundColor: '#ffffff', borderStyle: 'solid', borderWidth: 1}
@@ -21,14 +22,18 @@ export default class Input extends Component {
     this.buildGameGrid()
   }
 
+  componentWillUnmount() {
+    clearInterval(this.falling)
+  }
+
   buildGameGrid() {
     let grid = []
     let row = []
 
     for (var height = 0; height < 20; height++) {
       for (var width = 0; width < 11; width++) {
-    // for (var height = 0; height < 3; height++) {
-    //   for (var width = 0; width < 6; width++) {
+    // for (var height = 0; height < 4; height++) {
+    //   for (var width = 0; width < 7; width++) {
         let space = 0
         row.push(space)
       }
@@ -36,63 +41,174 @@ export default class Input extends Component {
       row = []
     }
 
-    this.setState({grid: grid})
-  }
-
-  isSpaceFull(xCoord, yCoord) {
-    let spaceIsFull
-
-    if (this.state.grid[yCoord][xCoord] === 0) {
-      spaceIsFull = false
-    } else {
-      spaceIsFull = true
-    }
-
-    return spaceIsFull
+    this.setState({grid: grid}, () => {
+      this.start()
+    })
   }
 
   queueTetrimos() {
-    const { tetrimoQueue } = this.state
+    let queue = this.state.tetrimoQueue
     let tetrimoShapes = ['Z', 'S', 'L', 'J', 'T', 'I', 'O']
     // let nextId = 0
     // let nextId = tetrimoQueue[tetrimoQueue.length - 1].id++ || 0
 
-    while (tetrimoQueue.length < 3) {
+    while (queue.length < 3) {
       let randomTetrimoType = tetrimoShapes[Math.floor(Math.random() * tetrimoShapes.length)]
       let newTetrimo = createTetrimo(randomTetrimoType)
-
-      this.setState({tetrimoQueue: tetrimoQueue.push(newTetrimo)})
+      queue.push(newTetrimo)
     }
-  }
 
-  placeTetrimo() {
-    let grid = this.state.grid
     let tetrimo = this.state.tetrimoQueue.shift()
     let current = tetrimo.shape[tetrimo.rotation]
+    let grid = this.state.grid
 
-    // for (let i = 0; i < tetrimo.shape[0].length; i++) {
-    //   grid[tetrimo.shape[0][i][1]][tetrimo.shape[0][i][0]] = 1
-    // }
-
-    // this.setState({grid: grid, tetrimo: tetrimo})
     for (let i = 0; i < current.length; i++) {
-      grid[current[i][1]][current[i][0]] = 1
+      grid[current[i][1]][current[i][0]] = 2
     }
 
-    this.setState({grid: grid, tetrimo: tetrimo})
+    this.setState({grid: grid, tetrimoQueue: queue}, () => {
+      this.loop(tetrimo)
+    })
   }
 
-  getTetrimo() {
+  // fireTetrimo() {
+  //   let tetrimo = this.state.tetrimoQueue.shift()
+  //   let current = tetrimo.shape[tetrimo.rotation]
+  //   let grid = this.state.grid
+  //   // for (let i = 0; i < tetrimo.shape[0].length; i++) {
+  //   //   grid[tetrimo.shape[0][i][1]][tetrimo.shape[0][i][0]] = 1
+  //   // }
+
+  //   // this.setState({grid: grid, tetrimo: tetrimo})
+  //   for (let i = 0; i < current.length; i++) {
+  //     grid[current[i][1]][current[i][0]] = 2
+  //   }
+
+  //   this.setState({grid: grid, tetrimo: tetrimo})
+  // }
+
+  renderTetrimo(tetrimo) {
+    let grid = this.state.grid
+    // let { tetrimo } = this.state
+    let orientation = tetrimo.shape[tetrimo.rotation]
+
+    for (let i = 0; i < orientation.length; i++) {
+      grid[orientation[i][1]][orientation[i][0]] = 2
+    }
+
+    // this.setState({grid: grid})
+  }
+
+  findTetrimo() {
+    let { grid } = this.state
+    let tetrimoBlocks = []
+
+    grid.map(space => {
+      if (space === 2) {
+        tetrimoBlocks.push(space)
+      }
+    })
+
+    return tetrimoBlocks
+  }
+
+  canTetrimoMoveLeft() {
+    let { tetrimo, grid } = this.state
+    let orientation = tetrimo.shape[tetrimo.rotation]
+
+    for (let i = 0; i < orientation.length; i++) {
+      let oneLeft = orientation[i][1] - 1
+      if (!grid[orientation[i][1]][orientation[i][oneLeft]] || grid[orientation[i][1]][orientation[i][oneLeft]] === 1) {
+        console.log('FALSE')
+        console.log(grid[orientation[i][1]][orientation[i][oneLeft]])
+        // return false
+      }
+    }
+
+    // let newPositionGrid = grid
+    // let newPositionTetrimo = tetrimo
+
+    // for (let eachOrientation = 0; eachOrientation < newPositionTetrimo.shape.length; eachOrientation++) {
+    //   for (let eachBlock = 0; eachBlock < newPositionTetrimo.shape[eachOrientation].length; eachBlock++) {
+    //     newPositionTetrimo.shape[eachOrientation][eachBlock][0]--
+
+    //     if (eachOrientation === tetrimo.rotation) {
+    //       newPositionGrid[orientation[eachBlock][1]][orientation[eachBlock][0]] = 0
+    //       // newPositionGrid[newPositionTetrimo[eachBlock][1]][newPositionTetrimo[eachBlock][0]] = 2
+    //     }
+    //   }
+
+    // }
+
+    // this.setState({grid: newPositionGrid, tetrimo: newPositionTetrimo})
+    // console.log(this.state.tetrimo)
+  }
+
+  down(tetrimo) {
+    let { grid } = this.state
+    let oldTetrimo = tetrimo.shape[tetrimo.rotation]
+    for (let oldBlocks = 0; oldBlocks < oldTetrimo.length; oldBlocks++) {
+        grid[oldTetrimo[oldBlocks][1]][oldTetrimo[oldBlocks][0]] = 0
+    }
+
+    for (let eachRotation = 0; eachRotation < tetrimo.shape.length; eachRotation++) {
+      for (let eachBlock = 0; eachBlock < tetrimo.shape[eachRotation].length; eachBlock++) {
+        if (eachRotation === tetrimo.rotation) {
+          tetrimo.shape[eachRotation][eachBlock][1]++
+          grid[tetrimo.shape[eachRotation][eachBlock][1]][tetrimo.shape[eachRotation][eachBlock][0]] = 2
+        } else {
+          tetrimo.shape[eachRotation][eachBlock][1]++
+        }
+      }
+    }
+
+    this.setState({grid: grid, tetrimo: tetrimo}, () => {
+      this.loop(tetrimo)
+    })
+  }
+
+  canTetrimoMoveDown(tetrimo) {
+    let { grid } = this.state
+
+    let rotation = tetrimo.shape[tetrimo.rotation]
+
+    for (let eachBlock = 0; eachBlock < rotation.length; eachBlock++) {
+      let oneDown = rotation[eachBlock][1] + 1
+      if (!grid[oneDown] || grid[oneDown][rotation[eachBlock][0]] === 1) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  moveTetrimoDown(tetrimo) {
+    if (this.canTetrimoMoveDown(tetrimo)) {
+      this.down(tetrimo)
+    } else {
+      clearInterval(this.falling)
+
+      let newGrid = this.state.grid
+      let rotation = tetrimo.shape[tetrimo.rotation]
+
+      for (let blocks = 0; blocks < rotation.length; blocks++) {
+        newGrid[rotation[blocks][1]][rotation[blocks][0]] = 1
+      }
+
+      this.setState({grid: newGrid}, () => {
+        this.queueTetrimos()
+      })
+    }
+  }
+
+  loop(tetrimo) {
+    clearInterval(this.falling)
+    this.falling = setInterval(() => this.moveTetrimoDown(tetrimo), 350)
+  }
+
+  start() {
+    this.setState({playing: true})
     this.queueTetrimos()
-    // this.setState({tetrimo: this.state.tetrimoQueue.shift()})
-    // .then(() => {
-      this.placeTetrimo()
-    // })
-  }
-
-  canMoveDown() {
-    // if yes move down
-    // if no, queue tetrimos, and drop next
   }
 
   render() {
@@ -103,7 +219,8 @@ export default class Input extends Component {
           <TouchableOpacity
           style={styles.buttonLeft}
           onPress={() => {
-            this.getTetrimo()
+            console.log('LEFT')
+            // this.canTetrimoMoveLeft()
           }} />
 
           <TouchableOpacity
@@ -123,7 +240,7 @@ export default class Input extends Component {
           <TouchableOpacity
           style={styles.buttonDown}
           onPress={() => {
-
+            // this.moveTetrimoDown()
           }} />
         </View>
       </View>
