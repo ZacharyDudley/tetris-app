@@ -138,6 +138,23 @@ export default class Input extends Component {
     })
   }
 
+  rotate() {
+    let { grid } = this.state
+    let oldTetrimo = this.tetrimo.shape[this.tetrimo.rotation]
+    for (let oldBlocks = 0; oldBlocks < oldTetrimo.length; oldBlocks++) {
+      grid[oldTetrimo[oldBlocks][1]][oldTetrimo[oldBlocks][0]] = 0
+    }
+
+    this.tetrimo.rotation = ++this.tetrimo.rotation % 4
+    for (let eachBlock = 0; eachBlock < this.tetrimo.shape[this.tetrimo.rotation].length; eachBlock++) {
+      grid[this.tetrimo.shape[this.tetrimo.rotation][eachBlock][1]][this.tetrimo.shape[this.tetrimo.rotation][eachBlock][0]] = 2
+    }
+
+    this.setState({grid: grid}, () => {
+      // this.loop()
+    })
+  }
+
   canTetrimoMoveLeft() {
     let { grid } = this.state
     let rotation = this.tetrimo.shape[this.tetrimo.rotation]
@@ -148,7 +165,6 @@ export default class Input extends Component {
         return false
       }
     }
-
     return true
   }
 
@@ -161,9 +177,7 @@ export default class Input extends Component {
       if (!grid[rotation[eachBlock][1]][oneRight] === 0 || !grid[rotation[eachBlock][1]][oneRight] === 2 || oneRight > grid[rotation[eachBlock][1]].length - 1) {
         return false
       }
-
     }
-
     return true
   }
 
@@ -174,6 +188,18 @@ export default class Input extends Component {
     for (let eachBlock = 0; eachBlock < rotation.length; eachBlock++) {
       let oneDown = rotation[eachBlock][1] + 1
       if (!grid[oneDown] || grid[oneDown][rotation[eachBlock][0]] === 1) {
+        return false
+      }
+    }
+    return true
+  }
+
+  canTetrimoRotate() {
+    let { grid } = this.state
+    let rotation = this.tetrimo.shape[(this.tetrimo.rotation + 1) % 4]
+
+    for (let eachBlock = 0; eachBlock < rotation.length; eachBlock++) {
+      if (!grid[rotation[eachBlock][1]][rotation[eachBlock][0]] === 0 || !grid[rotation[eachBlock][1]][rotation[eachBlock][0]] === 2 || grid[rotation[eachBlock][1]][rotation[eachBlock][0]] === undefined) {
         return false
       }
     }
@@ -209,6 +235,12 @@ export default class Input extends Component {
     }
   }
 
+  rotateTetrimo() {
+    if (this.canTetrimoRotate()) {
+      this.rotate()
+    }
+  }
+
   loop() {
     clearInterval(this.falling)
     this.falling = setInterval(() => {
@@ -235,7 +267,7 @@ export default class Input extends Component {
           <TouchableOpacity
           style={styles.buttonRotate}
           onPress={() => {
-
+            this.rotateTetrimo()
           }} />
 
           <TouchableOpacity
