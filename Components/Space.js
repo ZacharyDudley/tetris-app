@@ -15,12 +15,12 @@ export default class Space extends Component {
 
   render() {
     return (
-      // <View style={ [styles.space, this.props.style] } />
-      <View style={ [styles.space, this.props.style] }>
-      {
-          <Text>{`${this.state.xCoords}, ${this.state.yCoords}`}</Text>
-      }
-      </View>
+      <View style={ [styles.space, this.props.style] } />
+      // <View style={ [styles.space, this.props.style] }>
+      // {
+      //     <Text>{`${this.state.xCoords}, ${this.state.yCoords}`}</Text>
+      // }
+      // </View>
     )
   }
 }

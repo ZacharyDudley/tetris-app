@@ -22,6 +22,10 @@ export default class Input extends Component {
     this.buildGameGrid()
   }
 
+  componentWillUnmount() {
+    clearInterval(this.falling)
+  }
+
   buildGameGrid() {
     let grid = []
     let row = []
@@ -62,11 +66,7 @@ export default class Input extends Component {
       grid[current[i][1]][current[i][0]] = 2
     }
 
-    // this.setState({grid: grid, tetrimo: tetrimo})
-
-    // this.setState({tetrimoQueue: queue, tetrimo: tetrimo}, () => {
     this.setState({grid: grid, tetrimoQueue: queue}, () => {
-      // this.moveTetrimoDown(tetrimo)
       this.loop(tetrimo)
     })
   }
@@ -163,7 +163,7 @@ export default class Input extends Component {
     }
 
     this.setState({grid: grid, tetrimo: tetrimo}, () => {
-      // this.loop(tetrimo)
+      this.loop(tetrimo)
     })
   }
 
@@ -174,7 +174,7 @@ export default class Input extends Component {
 
     for (let eachBlock = 0; eachBlock < rotation.length; eachBlock++) {
       let oneDown = rotation[eachBlock][1] + 1
-      if (!grid[oneDown] || !grid[oneDown][rotation[eachBlock][0]] === 0 || !grid[oneDown][rotation[eachBlock][0]] === 2) {
+      if (!grid[oneDown] || grid[oneDown][rotation[eachBlock][0]] === 1) {
         return false
       }
     }
@@ -183,20 +183,27 @@ export default class Input extends Component {
   }
 
   moveTetrimoDown(tetrimo) {
-    // if (this.canTetrimoMoveDown(tetrimo.shape[tetrimo.rotation])) {
-      // this.down(tetrimo)
     if (this.canTetrimoMoveDown(tetrimo)) {
       this.down(tetrimo)
     } else {
       clearInterval(this.falling)
-      this.queueTetrimos()
+
+      let newGrid = this.state.grid
+      let rotation = tetrimo.shape[tetrimo.rotation]
+
+      for (let blocks = 0; blocks < rotation.length; blocks++) {
+        newGrid[rotation[blocks][1]][rotation[blocks][0]] = 1
+      }
+
+      this.setState({grid: newGrid}, () => {
+        this.queueTetrimos()
+      })
     }
   }
 
   loop(tetrimo) {
-    this.falling = setInterval(() => this.moveTetrimoDown(tetrimo), 500)
-
-    // this.moveTetrimoDown(tetrimo)
+    clearInterval(this.falling)
+    this.falling = setInterval(() => this.moveTetrimoDown(tetrimo), 350)
   }
 
   start() {
