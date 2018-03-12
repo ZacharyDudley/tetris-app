@@ -165,7 +165,6 @@ export default class Input extends Component {
         return false
       }
     }
-
     return true
   }
 
@@ -178,9 +177,7 @@ export default class Input extends Component {
       if (!grid[rotation[eachBlock][1]][oneRight] === 0 || !grid[rotation[eachBlock][1]][oneRight] === 2 || oneRight > grid[rotation[eachBlock][1]].length - 1) {
         return false
       }
-
     }
-
     return true
   }
 
@@ -199,8 +196,14 @@ export default class Input extends Component {
 
   canTetrimoRotate() {
     let { grid } = this.state
-    let rotation = this.tetrimo.shape[++this.tetrimo.rotation % 4]
+    let rotation = this.tetrimo.shape[(this.tetrimo.rotation + 1) % 4]
 
+    for (let eachBlock = 0; eachBlock < rotation.length; eachBlock++) {
+      if (!grid[rotation[eachBlock][1]][rotation[eachBlock][0]] === 0 || !grid[rotation[eachBlock][1]][rotation[eachBlock][0]] === 2 || grid[rotation[eachBlock][1]][rotation[eachBlock][0]] === undefined) {
+        return false
+      }
+    }
+    return true
   }
 
   moveTetrimoLeft() {
@@ -264,7 +267,7 @@ export default class Input extends Component {
           <TouchableOpacity
           style={styles.buttonRotate}
           onPress={() => {
-            this.rotate()
+            this.rotateTetrimo()
           }} />
 
           <TouchableOpacity
