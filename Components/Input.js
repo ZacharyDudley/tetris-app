@@ -10,12 +10,10 @@ export default class Input extends Component {
       grid: [],
       tetrimoQueue: [],
       playing: false,
+      lines: 0,
     }
 
     this.tetrimo = {}
-    this.styleGrid = {backgroundColor: '#ffffff', borderStyle: 'solid', borderWidth: 1}
-    this.styleFull = {backgroundColor: '#777777', borderStyle: 'solid', borderWidth: 2}
-
   }
 
   componentDidMount() {
@@ -229,6 +227,8 @@ export default class Input extends Component {
         newGrid[rotation[blocks][1]][rotation[blocks][0]] = 1
       }
 
+      this.checkLines()
+
       this.setState({grid: newGrid}, () => {
         this.queueTetrimos()
       })
@@ -246,6 +246,27 @@ export default class Input extends Component {
     this.falling = setInterval(() => {
       this.moveTetrimoDown()
     }, 1000)
+  }
+
+  checkLines() {
+    let newGrid = this.state.grid
+
+    for (let row = newGrid.length - 1; row > 1; row--) {
+      if (!newGrid[row].includes(0)) {
+        for (let eachRow = newGrid.length; eachRow > 0; eachRow--) {
+          for (let cellIndex = 0; cellIndex > newGrid[row].length; cellIndex++) {
+            newGrid[eachRow][cellIndex] = newGrid[eachRow - 1][cellIndex]
+          }
+        }
+      }
+    }
+
+    if (newGrid !== this.state.grid) {
+      this.setState({grid: newGrid}, () => {
+        console.log(this.state.lines)
+        this.queueTetrimos()
+      })
+    }
   }
 
   start() {
@@ -282,7 +303,8 @@ export default class Input extends Component {
           style={styles.buttonDown}
           onPress={() => {
             this.moveTetrimoDown()
-          }} />
+          }}
+          />
         </View>
       </View>
 
