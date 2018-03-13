@@ -12,7 +12,7 @@ export default class Input extends Component {
       playing: false,
       lines: 0,
     }
-
+    this.loopInterval = 1000
     this.tetrimo = {}
   }
 
@@ -245,7 +245,7 @@ export default class Input extends Component {
     clearInterval(this.falling)
     this.falling = setInterval(() => {
       this.moveTetrimoDown()
-    }, 1000)
+    }, this.loopInterval)
   }
 
   checkLines() {
@@ -303,6 +303,17 @@ export default class Input extends Component {
           style={styles.buttonDown}
           onPress={() => {
             this.moveTetrimoDown()
+          }}
+          onLongPress={() => {
+            clearInterval(this.falling)
+            clearInterval(this.quickLoopInterval)
+            this.quickLoopInterval = setInterval(() => {
+              this.moveTetrimoDown()
+            }, 5)
+          }}
+          onPressOut={() => {
+            clearInterval(this.quickLoopInterval)
+            this.loop()
           }}
           />
         </View>
