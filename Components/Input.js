@@ -159,7 +159,7 @@ export default class Input extends Component {
 
     for (let eachBlock = 0; eachBlock < rotation.length; eachBlock++) {
       let oneLeft = rotation[eachBlock][0] - 1
-      if (!grid[rotation[eachBlock][1]][oneLeft] === 0 || !grid[rotation[eachBlock][1]][oneLeft] === 2 || oneLeft < 0) {
+      if (grid[rotation[eachBlock][1]][oneLeft] === 1 || oneLeft < 0) {
         return false
       }
     }
@@ -172,7 +172,7 @@ export default class Input extends Component {
 
     for (let eachBlock = 0; eachBlock < rotation.length; eachBlock++) {
       let oneRight = rotation[eachBlock][0] + 1
-      if (!grid[rotation[eachBlock][1]][oneRight] === 0 || !grid[rotation[eachBlock][1]][oneRight] === 2 || oneRight > grid[rotation[eachBlock][1]].length - 1) {
+      if (grid[rotation[eachBlock][1]][oneRight] === 1 || oneRight > grid[rotation[eachBlock][1]].length - 1) {
         return false
       }
     }
