@@ -247,8 +247,17 @@ class Input extends Component {
     }, this.loopInterval)
   }
 
-  checkLines(grid) {
-    for (let row = grid.length - 1; row > 1; row--) {
+  noFullLines(grid) {
+    for (let row = grid.length - 1; row > 0; row--) {
+      if (!grid[row].includes(0)) {
+        return false
+      }
+    }
+    return true
+  }
+
+  removeAndCountLine(grid) {
+    for (let row = grid.length - 1; row > 0; row--) {
       if (!grid[row].includes(0)) {
         this.lines++
         for (let eachRow = row; eachRow > 0; eachRow--) {
@@ -258,11 +267,41 @@ class Input extends Component {
         }
       }
     }
+    return grid
+  }
+
+  checkLines(grid) {
+    if (!this.noFullLines(grid)) {
+      while (!this.noFullLines(grid)) {
+        let newGrid = this.removeAndCountLine(grid)
+        grid = newGrid
+      }
+    } else {
+      // isGameOver(grid)
+    }
 
     this.setState({grid: grid}, () => {
       this.queueTetrimos()
     })
   }
+
+
+  // checkLines(grid) {
+  //   for (let row = grid.length - 1; row > 0; row--) {
+  //     if (!grid[row].includes(0)) {
+  //       this.lines++
+  //       for (let eachRow = row; eachRow > 0; eachRow--) {
+  //         for (let cellIndex = 0; cellIndex < grid[eachRow].length; cellIndex++) {
+  //           grid[eachRow][cellIndex] = grid[eachRow - 1][cellIndex]
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   this.setState({grid: grid}, () => {
+  //     this.queueTetrimos()
+  //   })
+  // }
 
   start() {
     this.setState({playing: true})
