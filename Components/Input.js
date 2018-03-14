@@ -227,7 +227,7 @@ export default class Input extends Component {
         newGrid[rotation[blocks][1]][rotation[blocks][0]] = 1
       }
 
-      this.checkLines()
+      this.checkForCompletedLines()
 
       this.setState({grid: newGrid}, () => {
         this.queueTetrimos()
@@ -248,7 +248,7 @@ export default class Input extends Component {
     }, 1000)
   }
 
-  checkLines() {
+  checkForCompletedLines() {
     let newGrid = this.state.grid
 
     for (let row = newGrid.length - 1; row > 1; row--) {
@@ -267,6 +267,10 @@ export default class Input extends Component {
         this.queueTetrimos()
       })
     }
+  }
+
+  shiftLines() {
+
   }
 
   start() {
