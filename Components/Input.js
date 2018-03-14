@@ -10,8 +10,8 @@ export default class Input extends Component {
       grid: [],
       tetrimoQueue: [],
       playing: false,
-      lines: 0,
     }
+    this.lines = 0
     this.loopInterval = 1000
     this.tetrimo = {}
   }
@@ -247,6 +247,7 @@ export default class Input extends Component {
   checkLines(grid) {
     for (let row = grid.length - 1; row > 1; row--) {
       if (!grid[row].includes(0)) {
+        this.lines++
         for (let eachRow = row; eachRow > 0; eachRow--) {
           for (let cellIndex = 0; cellIndex < grid[eachRow].length; cellIndex++) {
             grid[eachRow][cellIndex] = grid[eachRow - 1][cellIndex]
@@ -310,11 +311,19 @@ export default class Input extends Component {
         </View>
       </View>
 
-      <View style={styles.gameContainer}>
-      {
-        <GameBoard grid={this.state.grid} />
-      }
+      <View style={styles.infoContainer}>
+        <View style={styles.gameContainer}>
+        {
+          <GameBoard grid={this.state.grid} />
+        }
+        </View>
+
+        <View style={styles.scoreContainer}>
+          <Text style={styles.scoreText}>SCORE</Text>
+          <Text style={styles.linesText}>{ this.lines }</Text>
+        </View>
       </View>
+
     </View>
     )
   }
@@ -333,10 +342,30 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     zIndex: 10
   },
+  infoContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    zIndex: 1,
+  },
   gameContainer: {
     flex: 1,
-    position: 'absolute',
-    zIndex: 1
+    padding: 4
+  },
+  scoreContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scoreText: {
+    fontSize: 20,
+    fontWeight: '100'
+  },
+  linesText: {
+    fontSize: 30,
+    fontWeight: '200'
   },
   topButtons: {
     flex: 2.7,
