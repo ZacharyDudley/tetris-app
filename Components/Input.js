@@ -276,13 +276,17 @@ class Input extends Component {
         let newGrid = this.removeAndCountLine(grid)
         grid = newGrid
       }
+    } else if (grid[0].includes(1)) {
+      this.endGame()
     } else {
-      // isGameOver(grid)
+      this.setState({grid: grid}, () => {
+        this.queueTetrimos()
+      })
     }
+  }
 
-    this.setState({grid: grid}, () => {
-      this.queueTetrimos()
-    })
+  endGame() {
+    console.log('GAMEOVER')
   }
 
 
