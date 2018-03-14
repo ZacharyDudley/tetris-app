@@ -1,5 +1,6 @@
 export default function createTetrimo(type) {
   let shapeL = {
+    type: 'L',
     rotation: 0,
     shape: [
       [
@@ -30,6 +31,7 @@ export default function createTetrimo(type) {
   }
 
   let shapeJ = {
+    type: 'J',
     rotation: 0,
     shape: [
       [
@@ -60,6 +62,7 @@ export default function createTetrimo(type) {
   }
 
   let shapeZ = {
+    type: 'Z',
     rotation: 0,
     shape: [
       [
@@ -90,6 +93,7 @@ export default function createTetrimo(type) {
   }
 
   let shapeS = {
+    type: 'S',
     rotation: 0,
     shape: [
       [
@@ -120,6 +124,7 @@ export default function createTetrimo(type) {
   }
 
   let shapeT = {
+    type: 'T',
     rotation: 0,
     shape: [
       [
@@ -150,6 +155,7 @@ export default function createTetrimo(type) {
   }
 
   let shapeI = {
+    type: 'I',
     rotation: 0,
     shape: [
       [
@@ -180,6 +186,7 @@ export default function createTetrimo(type) {
   }
 
   let shapeO = {
+    type: 'O',
     rotation: 0,
     shape: [
       [
