@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import { GameBoard, createTetrimo, Space } from '../Components'
+import { withNavigation } from 'react-navigation'
+import { GameBoard, createTetrimo } from '../Components'
 
 
-export default class Input extends Component {
+class Input extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -61,6 +62,9 @@ export default class Input extends Component {
     for (let i = 0; i < current.length; i++) {
       grid[current[i][1]][current[i][0]] = 2
     }
+
+    // this.props.navigation.setParams({preview: queue[0].type})
+    this.props.navigation.setParams({type: this.state.tetrimoQueue[0].type})
 
     this.setState({grid: grid, tetrimoQueue: queue}, () => {
       this.loop()
@@ -269,60 +273,61 @@ export default class Input extends Component {
   render() {
     return (
       <View style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <View style={styles.topButtons}>
-          <TouchableOpacity
-          style={styles.buttonLeft}
-          onPress={() => {
-            this.moveTetrimoLeft()
-          }} />
 
-          <TouchableOpacity
-          style={styles.buttonRotate}
-          onPress={() => {
-            this.rotateTetrimo()
-          }} />
+        <View style={styles.buttonContainer}>
+          <View style={styles.topButtons}>
+            <TouchableOpacity
+            style={styles.buttonLeft}
+            onPress={() => {
+              this.moveTetrimoLeft()
+            }} />
 
-          <TouchableOpacity
-          style={styles.buttonRight}
-          onPress={() => {
-            this.moveTetrimoRight()
-          }} />
-        </View>
+            <TouchableOpacity
+            style={styles.buttonRotate}
+            onPress={() => {
+              this.rotateTetrimo()
+            }} />
 
-        <View style={styles.bottomButtons}>
-          <TouchableOpacity
-          style={styles.buttonDown}
-          onPress={() => {
-            this.moveTetrimoDown()
-          }}
-          onLongPress={() => {
-            clearInterval(this.falling)
-            clearInterval(this.quickLoopInterval)
-            this.quickLoopInterval = setInterval(() => {
+            <TouchableOpacity
+            style={styles.buttonRight}
+            onPress={() => {
+              this.moveTetrimoRight()
+            }} />
+          </View>
+
+          <View style={styles.bottomButtons}>
+            <TouchableOpacity
+            style={styles.buttonDown}
+            onPress={() => {
               this.moveTetrimoDown()
-            }, 5)
-          }}
-          onPressOut={() => {
-            clearInterval(this.quickLoopInterval)
-            this.loop()
-          }}
-          />
+            }}
+            onLongPress={() => {
+              clearInterval(this.falling)
+              clearInterval(this.quickLoopInterval)
+              this.quickLoopInterval = setInterval(() => {
+                this.moveTetrimoDown()
+              }, 5)
+            }}
+            onPressOut={() => {
+              clearInterval(this.quickLoopInterval)
+              this.loop()
+            }}
+            />
+          </View>
         </View>
-      </View>
 
-      <View style={styles.infoContainer}>
-        <View style={styles.gameContainer}>
-        {
-          <GameBoard grid={this.state.grid} />
-        }
-        </View>
+        <View style={styles.infoContainer}>
+          <View style={styles.gameContainer}>
+          {
+            <GameBoard grid={this.state.grid} />
+          }
+          </View>
 
-        <View style={styles.scoreContainer}>
-          <Text style={styles.scoreText}>SCORE</Text>
-          <Text style={styles.linesText}>{ this.lines }</Text>
+          <View style={styles.scoreContainer}>
+            <Text style={styles.scoreText}>SCORE</Text>
+            <Text style={styles.linesText}>{ this.lines }</Text>
+          </View>
         </View>
-      </View>
 
     </View>
     )
@@ -397,3 +402,5 @@ const styles = StyleSheet.create({
   }
 
 })
+
+export default withNavigation(Input)

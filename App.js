@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import { Input } from './Components'
+import { Input, Preview } from './Components'
 
 
 class Menu extends Component {
@@ -20,6 +20,15 @@ class Menu extends Component {
 }
 
 class Game extends Component {
+  static navigationOptions = ({navigation}) => {
+    const { params } = navigation.state
+
+    return {
+      // headerTitle: params ? <Preview type={params.type} /> : ''
+      title: params ? params.type : ''
+    }
+  }
+
   render() {
     return(
       <View style={ styles.container }>
