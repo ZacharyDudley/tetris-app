@@ -63,7 +63,6 @@ class Input extends Component {
       grid[current[i][1]][current[i][0]] = 2
     }
 
-    // this.props.navigation.setParams({preview: queue[0].type})
     this.props.navigation.setParams({type: this.state.tetrimoQueue[0].type})
 
     this.setState({grid: grid, tetrimoQueue: queue}, () => {

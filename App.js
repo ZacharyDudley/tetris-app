@@ -24,8 +24,8 @@ class Game extends Component {
     const { params } = navigation.state
 
     return {
-      // headerTitle: params ? <Preview type={params.type} /> : ''
-      title: params ? params.type : ''
+      headerTitle: params ? <Preview type={params.type} /> : ''
+      // title: params ? params.type : ''
     }
   }
 

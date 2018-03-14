@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
-import { Space, createTetrimo } from '../Components'
-
 
 export default class Preview extends Component {
   constructor(props) {
@@ -11,7 +9,6 @@ export default class Preview extends Component {
     }
 
     this.type = props.type
-    this.emptyGrid = []
     this.grid = []
     this.styleEmpty = {backgroundColor: '#ffffff'}
     this.styleFull = {backgroundColor: '#777777', borderStyle: 'solid', borderWidth: 2}
@@ -19,31 +16,105 @@ export default class Preview extends Component {
 
   componentDidMount() {
     this.buildGrid()
+    this.buildTetrimo(this.type)
   }
 
   componentWillReceiveProps(props) {
-    this.grid = this.emptyGrid
-    let tetrimo = createTetrimo(props.type)
-    let current = tetrimo.shape[0]
+    this.buildTetrimo(props.type)
+  }
 
-    for (let i = 0; i < current.length; i++) {
-      this.grid[current[i][1]][current[i][0]] = 2
+  buildTetrimo(type) {
+    for (let rows = 0; rows < this.grid.length; rows++) {
+      for (let cells = 0; cells < this.grid[rows].length; cells++) {
+        this.grid[rows][cells] = 0
+      }
+    }
+
+    let tetrimo = []
+
+    let shapeL = [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+      [2, 0]
+    ]
+
+    let shapeJ = [
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [2, 1]
+    ]
+
+    let shapeZ = [
+      [0, 0],
+      [1, 0],
+      [1, 1],
+      [2, 1]
+    ]
+
+    let shapeS = [
+      [2, 0],
+      [1, 0],
+      [1, 1],
+      [0, 1]
+    ]
+
+    let shapeT = [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+      [1, 1]
+    ]
+
+    let shapeI = [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+      [3, 1]
+    ]
+
+    let shapeO = [
+      [2, 0],
+      [2, 1],
+      [1, 0],
+      [1, 1]
+    ]
+
+    if (type === 'T') {
+      tetrimo = shapeT
+    } else if (type === 'L') {
+      tetrimo = shapeL
+    } else if (type === 'Z') {
+      tetrimo = shapeZ
+    } else if (type === 'S') {
+      tetrimo = shapeS
+    } else if (type === 'J') {
+      tetrimo = shapeJ
+    } else if (type === 'I') {
+      tetrimo = shapeI
+    } else if (type === 'O') {
+      tetrimo = shapeO
+    }
+
+    for (let i = 0; i < tetrimo.length; i++) {
+      this.grid[tetrimo[i][1]][tetrimo[i][0]] = 1
     }
   }
 
   buildGrid() {
     let row = []
 
-    for (var height = 0; height < 4; height++) {
+    for (var height = 0; height < 2; height++) {
       for (var width = 0; width < 4; width++) {
         let space = 0
         row.push(space)
       }
-      this.emptyGrid.push(row)
+      this.grid.push(row)
       row = []
     }
 
-    this.setState({grid: this.emptyGrid}, () => {
+    this.setState({grid: this.grid}, () => {
 
     })
   }
@@ -52,7 +123,7 @@ export default class Preview extends Component {
     return (
       <View style={ styles.container }>
         {
-          this.emptyGrid && this.grid.map((row, y) => {
+          this.grid && this.grid.map((row, y) => {
             return (
               <View key={y} style={{flexDirection: 'row'}}>
               {
@@ -61,8 +132,6 @@ export default class Preview extends Component {
                     cell === 0
                       ? <View key={`${x}, ${y}`} style={ styles.littleSpace } />
                       : <View key={`${x}, ${y}`} style={ [styles.littleSpace, this.styleFull] } />
-                      // ? <Space key={`${x}, ${y}`} coords={[x, y]} style={ this.styleEmpty } />
-                      // : <Space key={`${x}, ${y}`} coords={[x, y]} style={ this.styleFull } />
                   )
                 })
               }
@@ -77,27 +146,6 @@ export default class Preview extends Component {
   render() {
     return (
       this.renderPreview()
-      // <View style={ styles.container }>
-      //   {
-      //     this.grid && this.grid.map((row, y) => {
-      //       return (
-      //         <View key={y} style={{flexDirection: 'row'}}>
-      //         {
-      //           row.map((cell, x) => {
-      //             return (
-      //               cell === 0
-      //                 ? <View key={`${x}, ${y}`} style={ styles.littleSpace } />
-      //                 : <View key={`${x}, ${y}`} style={ [styles.littleSpace, this.styleFull] } />
-      //                 // ? <Space key={`${x}, ${y}`} coords={[x, y]} style={ this.styleEmpty } />
-      //                 // : <Space key={`${x}, ${y}`} coords={[x, y]} style={ this.styleFull } />
-      //             )
-      //           })
-      //         }
-      //         </View>
-      //       )
-      //     })
-      //   }
-      // </View>
     )
   }
 }
@@ -105,10 +153,9 @@ export default class Preview extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // position: 'absolute',
-    // backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   littleSpace: {
     flex: 0,
