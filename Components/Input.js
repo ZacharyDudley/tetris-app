@@ -227,11 +227,7 @@ export default class Input extends Component {
         newGrid[rotation[blocks][1]][rotation[blocks][0]] = 1
       }
 
-      this.checkLines()
-
-      this.setState({grid: newGrid}, () => {
-        this.queueTetrimos()
-      })
+      this.checkLines(newGrid)
     }
   }
 
@@ -248,25 +244,20 @@ export default class Input extends Component {
     }, this.loopInterval)
   }
 
-  checkLines() {
-    let newGrid = this.state.grid
-
-    for (let row = newGrid.length - 1; row > 1; row--) {
-      if (!newGrid[row].includes(0)) {
-        for (let eachRow = newGrid.length; eachRow > 0; eachRow--) {
-          for (let cellIndex = 0; cellIndex > newGrid[row].length; cellIndex++) {
-            newGrid[eachRow][cellIndex] = newGrid[eachRow - 1][cellIndex]
+  checkLines(grid) {
+    for (let row = grid.length - 1; row > 1; row--) {
+      if (!grid[row].includes(0)) {
+        for (let eachRow = row; eachRow > 0; eachRow--) {
+          for (let cellIndex = 0; cellIndex < grid[eachRow].length; cellIndex++) {
+            grid[eachRow][cellIndex] = grid[eachRow - 1][cellIndex]
           }
         }
       }
     }
 
-    if (newGrid !== this.state.grid) {
-      this.setState({grid: newGrid}, () => {
-        console.log(this.state.lines)
-        this.queueTetrimos()
-      })
-    }
+    this.setState({grid: grid}, () => {
+      this.queueTetrimos()
+    })
   }
 
   start() {
