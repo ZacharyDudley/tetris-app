@@ -229,7 +229,6 @@ class Input extends Component {
       for (let blocks = 0; blocks < rotation.length; blocks++) {
         newGrid[rotation[blocks][1]][rotation[blocks][0]] = 1
       }
-
       this.checkLines(newGrid)
     }
   }
@@ -242,9 +241,12 @@ class Input extends Component {
 
   loop() {
     clearInterval(this.falling)
-    this.falling = setInterval(() => {
-      this.moveTetrimoDown()
-    }, this.loopInterval)
+
+    if (this.state.playing) {
+      this.falling = setInterval(() => {
+        this.moveTetrimoDown()
+      }, this.loopInterval)
+    }
   }
 
   noFullLines(grid) {
@@ -271,15 +273,13 @@ class Input extends Component {
   }
 
   checkLines(grid) {
-    if (!this.noFullLines(grid)) {
+    if (grid[0].includes(1)) {
+      this.endGame()
+    } else if (!this.noFullLines(grid)) {
       while (!this.noFullLines(grid)) {
         let newGrid = this.removeAndCountLine(grid)
         grid = newGrid
       }
-    }
-
-    if (grid[0].includes(1)) {
-      this.endGame()
     } else {
       this.setState({grid: grid}, () => {
         this.queueTetrimos()
@@ -290,17 +290,11 @@ class Input extends Component {
   endGame() {
     clearInterval(this.falling)
 
-    console.log('GAME OVER')
-    this.props.navigation.push('EndGame', {
-      score: this.lines
+    this.setState({playing: false}, () => {
+      this.props.navigation.push('EndGame', {
+        score: this.lines
+      })
     })
-
-    // this.setState({playing: false}, () => {
-    //   console.log('GAME OVER')
-    //   this.props.navigation.push('EndGame', {
-    //     score: this.lines
-    //   })
-    // })
   }
 
   start() {
@@ -317,19 +311,25 @@ class Input extends Component {
             <TouchableOpacity
             style={styles.buttonLeft}
             onPress={() => {
-              this.moveTetrimoLeft()
+              if (this.state.playing) {
+                this.moveTetrimoLeft()
+              }
             }} />
 
             <TouchableOpacity
             style={styles.buttonRotate}
             onPress={() => {
+              if (this.state.playing) {
               this.rotateTetrimo()
+              }
             }} />
 
             <TouchableOpacity
             style={styles.buttonRight}
             onPress={() => {
-              this.moveTetrimoRight()
+              if (this.state.playing) {
+                this.moveTetrimoRight()
+              }
             }} />
           </View>
 
@@ -337,18 +337,24 @@ class Input extends Component {
             <TouchableOpacity
             style={styles.buttonDown}
             onPress={() => {
-              this.moveTetrimoDown()
+              if (this.state.playing) {
+                this.moveTetrimoDown()
+              }
             }}
             onLongPress={() => {
               clearInterval(this.falling)
               clearInterval(this.quickLoopInterval)
               this.quickLoopInterval = setInterval(() => {
-                this.moveTetrimoDown()
+                if (this.state.playing) {
+                  this.moveTetrimoDown()
+                }
               }, 5)
             }}
             onPressOut={() => {
               clearInterval(this.quickLoopInterval)
-              this.loop()
+              if (this.state.playing) {
+                this.loop()
+              }
             }}
             />
           </View>
