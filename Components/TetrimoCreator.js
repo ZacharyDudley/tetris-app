@@ -4,6 +4,12 @@ export default function createTetrimo(type) {
     rotation: 0,
     shape: [
       [
+        [4, 1],
+        [5, 1],
+        [6, 1],
+        [6, 0]
+      ],
+      [
         [5, 0],
         [5, 1],
         [5, 2],
@@ -20,12 +26,6 @@ export default function createTetrimo(type) {
         [5, 1],
         [5, 0],
         [4, 0]
-      ],
-      [
-        [4, 1],
-        [5, 1],
-        [6, 1],
-        [6, 0]
       ]
     ]
   }
@@ -34,12 +34,6 @@ export default function createTetrimo(type) {
     type: 'J',
     rotation: 0,
     shape: [
-      [
-        [4, 2],
-        [5, 2],
-        [5, 1],
-        [5, 0]
-      ],
       [
         [4, 0],
         [4, 1],
@@ -57,6 +51,12 @@ export default function createTetrimo(type) {
         [6, 1],
         [5, 1],
         [4, 1]
+      ],
+      [
+        [4, 2],
+        [5, 2],
+        [5, 1],
+        [5, 0]
       ]
     ]
   }
@@ -159,28 +159,28 @@ export default function createTetrimo(type) {
     rotation: 0,
     shape: [
       [
+        [4, 0],
+        [5, 0],
+        [6, 0],
+        [7, 0]
+      ],
+      [
         [5, 0],
         [5, 1],
         [5, 2],
         [5, 3]
       ],
       [
-        [4, 1],
-        [5, 1],
-        [6, 1],
-        [7, 1]
+        [4, 0],
+        [5, 0],
+        [6, 0],
+        [7, 0]
       ],
       [
         [5, 0],
         [5, 1],
         [5, 2],
         [5, 3]
-      ],
-      [
-        [4, 1],
-        [5, 1],
-        [6, 1],
-        [7, 1]
       ]
     ]
   }
