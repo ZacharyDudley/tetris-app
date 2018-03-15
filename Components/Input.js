@@ -19,31 +19,40 @@ class Input extends Component {
   }
 
   componentDidMount() {
-    this.buildGameGrid()
+    AsyncStorage.multiGet(['game', 'lines', 'tetrimo'])
+      .then(res => {
+        let game = JSON.parse(res[0][1])
+        let lines = JSON.parse(res[1][1])
+        let tetrimo = JSON.parse(res[2][1])
+
+        if (game) {
+          this.setState({grid: game}, () => {
+            this.lines = lines
+            this.tetrimo = tetrimo
+            this.start()
+          })
+        } else {
+          this.buildGameGrid()
+        }
+      })
+      .catch(err => console.log('ERROR LOADING: ', err))
   }
 
   componentWillUnmount() {
-    if (!this.state.playing && !this.state.gameOver) {
+    // if (!this.state.playing && !this.state.gameOver) {
       this.saveGame()
-    }
+    // }
     clearInterval(this.falling)
   }
 
-  async saveGame() {
-    try {
-      await AsyncStorage.setItem('game', this.state.grid)
-    } catch (error) {
-      console.log('ERROR SAVING: ', error)
-    }
-  }
-
-  async loadGame() {
-    try {
-      const savedGame = await AsyncStorage.getItem('game')
-      this.setState({grid: savedGame})
-    } catch (error) {
-      console.log('ERROR LOADING: ', error)
-    }
+  saveGame() {
+      // AsyncStorage.setItem('game', JSON.stringify(this.state.grid))
+      AsyncStorage.multiSet([
+        ['game', JSON.stringify(this.state.grid)],
+        ['lines', JSON.stringify(this.state.lines)],
+        ['tetrimo', JSON.stringify(this.tetrimo)]
+      ])
+      .catch(err => console.log('ERROR SAVING: ', err))
   }
 
   buildGameGrid() {
@@ -311,7 +320,10 @@ class Input extends Component {
   endGame() {
     clearInterval(this.falling)
 
+    const keys = ['game', 'lines', 'tetrimo']
     this.setState({playing: false, gameOver: true}, () => {
+      AsyncStorage.multiRemove(keys)
+        .catch(err => console.log('ERROR CLEARING SAVE: ', err))
       this.props.navigation.push('EndGame', {
         score: this.lines
       })
