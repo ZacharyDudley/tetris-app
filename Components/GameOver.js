@@ -1,34 +1,30 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, Modal, Text } from 'react-native'
+import { StyleSheet, View, Text, Button } from 'react-native'
+import { withNavigation } from 'react-navigation'
 
-export default class GameOver extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      visible: false,
-      score: 0
-    }
-  }
-
-  componentDidMount() {
-
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({visible: props.visible, score: props.score})
-  }
-
+class GameOver extends Component {
   render() {
+    const { params } = this.props.navigation.state
+    const score = params ? params.score : null
+
     return (
       <View style={styles.container}>
-        <Modal
-          transparent={false}
-          visible={this.state.visible}>
+        <Text>GAME OVER</Text>
+        <Text>SCORE</Text>
+        <Text>{score}</Text>
 
-          <Text>GAME OVER</Text>
-          <Text>SCORE</Text>
-          <Text>{this.state.score}</Text>
-        </Modal>
+        <Button
+        title='new game'
+        onPress={() => {
+          this.props.navigation.navigate('Game')}}
+        />
+
+        <Button
+        title='menu'
+        onPress={() => {
+          this.props.navigation.navigate('Menu')}}
+        />
+
       </View>
     )
   }
@@ -41,3 +37,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 })
+
+export default withNavigation(GameOver)

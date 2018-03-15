@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import { Input, Preview } from './Components'
+import { Input, Preview, GameOver } from './Components'
 
 
 class Menu extends Component {
@@ -25,7 +25,6 @@ class Game extends Component {
 
     return {
       headerTitle: params ? <Preview type={params.type} /> : ''
-      // title: params ? params.type : ''
     }
   }
 
@@ -38,6 +37,17 @@ class Game extends Component {
   }
 }
 
+class EndGame extends Component {
+  render() {
+    return(
+      <View style={ styles.container }>
+        <GameOver />
+      </View>
+    )
+  }
+}
+
+
 const RootStack = StackNavigator({
   Menu: {
     screen: Menu
@@ -45,6 +55,9 @@ const RootStack = StackNavigator({
   Game: {
     screen: Game
   },
+  EndGame: {
+    screen: EndGame
+  }
 }, {
   initialRouteName: 'Menu'
 })

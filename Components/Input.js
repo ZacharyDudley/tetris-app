@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import { GameBoard, createTetrimo } from '../Components'
 
@@ -276,7 +276,9 @@ class Input extends Component {
         let newGrid = this.removeAndCountLine(grid)
         grid = newGrid
       }
-    } else if (grid[0].includes(1)) {
+    }
+
+    if (grid[0].includes(1)) {
       this.endGame()
     } else {
       this.setState({grid: grid}, () => {
@@ -286,26 +288,20 @@ class Input extends Component {
   }
 
   endGame() {
-    console.log('GAMEOVER')
+    clearInterval(this.falling)
+
+    console.log('GAME OVER')
+    this.props.navigation.push('EndGame', {
+      score: this.lines
+    })
+
+    // this.setState({playing: false}, () => {
+    //   console.log('GAME OVER')
+    //   this.props.navigation.push('EndGame', {
+    //     score: this.lines
+    //   })
+    // })
   }
-
-
-  // checkLines(grid) {
-  //   for (let row = grid.length - 1; row > 0; row--) {
-  //     if (!grid[row].includes(0)) {
-  //       this.lines++
-  //       for (let eachRow = row; eachRow > 0; eachRow--) {
-  //         for (let cellIndex = 0; cellIndex < grid[eachRow].length; cellIndex++) {
-  //           grid[eachRow][cellIndex] = grid[eachRow - 1][cellIndex]
-  //         }
-  //       }
-  //     }
-  //   }
-
-  //   this.setState({grid: grid}, () => {
-  //     this.queueTetrimos()
-  //   })
-  // }
 
   start() {
     this.setState({playing: true})
