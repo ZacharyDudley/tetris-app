@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Modal } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, AsyncStorage } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import { GameBoard, createTetrimo } from '../Components'
 
@@ -11,6 +11,7 @@ class Input extends Component {
       grid: [],
       tetrimoQueue: [],
       playing: false,
+      gameOver: false
     }
     this.lines = 0
     this.loopInterval = 1000
@@ -22,7 +23,27 @@ class Input extends Component {
   }
 
   componentWillUnmount() {
+    if (!this.state.playing && !this.state.gameOver) {
+      this.saveGame()
+    }
     clearInterval(this.falling)
+  }
+
+  async saveGame() {
+    try {
+      await AsyncStorage.setItem('game', this.state.grid)
+    } catch (error) {
+      console.log('ERROR SAVING: ', error)
+    }
+  }
+
+  async loadGame() {
+    try {
+      const savedGame = await AsyncStorage.getItem('game')
+      this.setState({grid: savedGame})
+    } catch (error) {
+      console.log('ERROR LOADING: ', error)
+    }
   }
 
   buildGameGrid() {
@@ -290,7 +311,7 @@ class Input extends Component {
   endGame() {
     clearInterval(this.falling)
 
-    this.setState({playing: false}, () => {
+    this.setState({playing: false, gameOver: true}, () => {
       this.props.navigation.push('EndGame', {
         score: this.lines
       })
