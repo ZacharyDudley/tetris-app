@@ -315,18 +315,17 @@ class Input extends Component {
   }
 
   checkLines(grid) {
-    if (grid[0].includes(1)) {
-      this.endGame()
-    } else if (!this.noFullLines(grid)) {
+    if (!this.noFullLines(grid)) {
       while (!this.noFullLines(grid)) {
-        let newGrid = this.removeAndCountLine(grid)
-        grid = newGrid
+        grid = this.removeAndCountLine(grid)
       }
-    } else {
-      this.setState({grid: grid}, () => {
-        this.queueTetrimos()
-      })
+    } else if (grid[0].includes(1)) {
+      this.endGame()
     }
+
+    this.setState({grid: grid}, () => {
+      this.queueTetrimos()
+    })
   }
 
   endGame() {
