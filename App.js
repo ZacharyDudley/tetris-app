@@ -8,7 +8,7 @@ class Menu extends Component {
   constructor() {
     super()
     this.state = {
-      continue: true,
+      continue: false,
       savedGame: [],
       score: 0,
       currentTetrimo: '',
@@ -20,7 +20,6 @@ class Menu extends Component {
     AsyncStorage.getItem('inProgress')
       .then(isSavedGame => {
         if (JSON.parse(isSavedGame)) {
-          console.log('FOUND GAME')
           AsyncStorage.multiGet(['game', 'lines', 'tetrimo', 'nextTetrimo'])
             .then(res => {
               this.setState({
@@ -47,6 +46,8 @@ class Menu extends Component {
               continue: false
             })}}
         />
+        {
+          this.state.continue &&
           <Button
             title='continue'
             onPress={() => {
@@ -58,6 +59,7 @@ class Menu extends Component {
                 nextTetrimo: this.state.nextTetrimo
               })}}
           />
+        }
       </View>
     )
   }

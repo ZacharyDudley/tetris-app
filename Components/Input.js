@@ -7,7 +7,7 @@ import { GameBoard, createTetrimo } from '../Components'
 class Input extends Component {
   constructor(props) {
     super(props)
-    const { params } = this.props.navigation.state
+    let { params } = this.props.navigation.state
 
     this.state = {
       grid: params ? params.savedGame : [],
@@ -23,7 +23,6 @@ class Input extends Component {
 
 
   componentDidMount() {
-      console.log('BUILDING GAME')
       this.buildGameGrid()
   }
 
@@ -35,34 +34,25 @@ class Input extends Component {
   }
 
   saveGame() {
-      // AsyncStorage.setItem('game', JSON.stringify(this.state.grid))
-      AsyncStorage.multiSet([
-        ['inProgress', 'true'],
-        ['game', JSON.stringify(this.state.grid)],
-        ['lines', JSON.stringify(this.lines)],
-        ['tetrimo', this.tetrimo.type],
-        ['nextTetrimo', this.state.tetrimoQueue[0].type],
-        // ['speed', JSON.stringify(this.loopInterval)]
-      ])
+    let keys = ['inProgress', 'game', 'lines', 'tetrimo', 'nextTetrimo']
+    AsyncStorage.multiRemove(keys)
+      .then(() => {
+        AsyncStorage.multiSet([
+          ['inProgress', 'true'],
+          ['game', JSON.stringify(this.state.grid)],
+          ['lines', JSON.stringify(this.lines)],
+          ['tetrimo', this.tetrimo.type],
+          ['nextTetrimo', this.state.tetrimoQueue[0].type],
+          // ['speed', JSON.stringify(this.loopInterval)]
+        ])
+      })
       .catch(err => console.log('ERROR SAVING: ', err))
   }
 
-  // loadGame(props) {
-  //   console.log('LOADING GAME')
-  //   // this.lines = props.score
-  //   this.setState({
-  //     grid: props.savedGame,
-  //     tetrimoQueue: [props.currentTetrimo, props.nextTetrimo],
-  //     playing: true
-  //   }, () => {
-  //     this.start()
-  //   })
-
-  // }
-
   buildGameGrid() {
+    let grid = []
+
     if (!this.state.grid) {
-      let grid = []
       let row = []
 
       for (var height = 0; height < 20; height++) {
@@ -74,12 +64,20 @@ class Input extends Component {
         row = []
       }
 
-      this.setState({grid: grid}, () => {
-        this.start()
-      })
     } else {
-      this.start()
+      grid = this.state.grid
+      for (let iRow = 0; iRow < grid.length; iRow++) {
+        for (let iCell = 0; iCell < grid[iRow].length; iCell++) {
+          if (grid[iRow][iCell] === 2) {
+            grid[iRow][iCell] = 0
+          }
+        }
+      }
     }
+
+    this.setState({grid: grid}, () => {
+      this.start()
+    })
   }
 
   queueTetrimos() {
@@ -328,8 +326,8 @@ class Input extends Component {
 
   endGame() {
     clearInterval(this.falling)
+    let keys = ['inProgress', 'game', 'lines', 'tetrimo', 'nextTetrimo']
 
-    const keys = ['game', 'lines', 'tetrimo']
     this.setState({playing: false, gameOver: true}, () => {
       AsyncStorage.multiRemove(keys)
         .catch(err => console.log('ERROR CLEARING SAVE: ', err))
