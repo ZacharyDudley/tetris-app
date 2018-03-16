@@ -37,7 +37,6 @@ class Menu extends Component {
   }
 
   render() {
-    console.log(this.state)
     return(
       <View style={ styles.container }>
         <Text>TETRIS</Text>
@@ -48,8 +47,6 @@ class Menu extends Component {
               continue: false
             })}}
         />
-        {
-          this.state.continueGame &&
           <Button
             title='continue'
             onPress={() => {
@@ -61,7 +58,6 @@ class Menu extends Component {
                 nextTetrimo: this.state.nextTetrimo
               })}}
           />
-        }
       </View>
     )
   }

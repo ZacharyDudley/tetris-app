@@ -7,37 +7,35 @@ import { GameBoard, createTetrimo } from '../Components'
 class Input extends Component {
   constructor(props) {
     super(props)
+    const { params } = this.props.navigation.state
+
     this.state = {
-      grid: [],
-      tetrimoQueue: [],
+      grid: params ? params.savedGame : [],
+      tetrimoQueue: params.currentTetrimo ? [createTetrimo(params.currentTetrimo), createTetrimo(params.nextTetrimo)] : [],
       playing: false,
       gameOver: false
     }
-    this.continue = props.continue
-    this.lines = 0
-    this.loopInterval = 1000
+    this.continue = params ? params.continue : false
+    this.lines = params.score ? params.score : 0
+    this.loopInterval = params.speed ? params.speed : 1000
     this.tetrimo = {}
   }
 
+
   componentDidMount() {
-    if (this.continue) {
-      this.loadGame()
-    } else {
       console.log('BUILDING GAME')
       this.buildGameGrid()
-    }
   }
 
   componentWillUnmount() {
+    clearInterval(this.falling)
     if (this.state.playing && !this.state.gameOver) {
       this.saveGame()
     }
-    clearInterval(this.falling)
   }
 
   saveGame() {
       // AsyncStorage.setItem('game', JSON.stringify(this.state.grid))
-      console.log('SAVING GAME')
       AsyncStorage.multiSet([
         ['inProgress', 'true'],
         ['game', JSON.stringify(this.state.grid)],
@@ -49,35 +47,39 @@ class Input extends Component {
       .catch(err => console.log('ERROR SAVING: ', err))
   }
 
-  loadGame() {
-    console.log('LOADING GAME')
-    this.lines = this.props.score
-    this.setState({
-      grid: this.props.savedGame,
-      tetrimoQueue: [this.props.currentTetrimo, this.props.nextTetrimo],
-      playing: true
-    }, () => {
-      this.start()
-    })
+  // loadGame(props) {
+  //   console.log('LOADING GAME')
+  //   // this.lines = props.score
+  //   this.setState({
+  //     grid: props.savedGame,
+  //     tetrimoQueue: [props.currentTetrimo, props.nextTetrimo],
+  //     playing: true
+  //   }, () => {
+  //     this.start()
+  //   })
 
-  }
+  // }
 
   buildGameGrid() {
-    let grid = []
-    let row = []
+    if (!this.state.grid) {
+      let grid = []
+      let row = []
 
-    for (var height = 0; height < 20; height++) {
-      for (var width = 0; width < 11; width++) {
-        let space = 0
-        row.push(space)
+      for (var height = 0; height < 20; height++) {
+        for (var width = 0; width < 11; width++) {
+          let space = 0
+          row.push(space)
+        }
+        grid.push(row)
+        row = []
       }
-      grid.push(row)
-      row = []
-    }
 
-    this.setState({grid: grid}, () => {
+      this.setState({grid: grid}, () => {
+        this.start()
+      })
+    } else {
       this.start()
-    })
+    }
   }
 
   queueTetrimos() {
