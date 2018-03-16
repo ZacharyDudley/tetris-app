@@ -38,33 +38,43 @@ class Menu extends Component {
   render() {
     return(
       <View style={ styles.container }>
-        <Text>TETRIS</Text>
-        <Button
-          title='play'
-          onPress={() => {
-            this.props.navigation.navigate('Game', {
-              continue: false
-            })}}
-        />
-        {
-          this.state.continue &&
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>
+            TETRIS
+          </Text>
+        </View>
+
+        <View style={styles.buttonContainer}>
           <Button
-            title='continue'
+            title='play'
+            style={styles.button}
             onPress={() => {
               this.props.navigation.navigate('Game', {
-                continue: true,
-                savedGame: this.state.savedGame,
-                score: this.state.score,
-                currentTetrimo: this.state.currentTetrimo,
-                nextTetrimo: this.state.nextTetrimo
+                continue: false
               })}}
           />
-        }
-        <Button
-          title='about'
-          onPress={() => {
-            this.props.navigation.navigate('Credits')}}
-        />
+          {
+            this.state.continue &&
+            <Button
+              title='continue'
+              style={styles.button}
+              onPress={() => {
+                this.props.navigation.navigate('Game', {
+                  continue: true,
+                  savedGame: this.state.savedGame,
+                  score: this.state.score,
+                  currentTetrimo: this.state.currentTetrimo,
+                  nextTetrimo: this.state.nextTetrimo
+                })}}
+            />
+          }
+          <Button
+            title='about'
+            style={styles.button}
+            onPress={() => {
+              this.props.navigation.navigate('Credits')}}
+          />
+        </View>
       </View>
     )
   }
@@ -140,4 +150,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  titleContainer: {
+    // alignItems: 'flex-end',
+    // width: '70%'
+  },
+  buttonContainer: {
+    alignItems: 'flex-end',
+    width: '70%'
+  },
+  button: {
+
+  },
+  title: {
+    fontSize: 100,
+    fontWeight: '100'
+  }
 })
