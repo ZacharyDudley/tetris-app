@@ -23,29 +23,42 @@ class Input extends Component {
     if (this.continue) {
       this.loadGame()
     } else {
+      console.log('BUILDING GAME')
       this.buildGameGrid()
     }
   }
 
   componentWillUnmount() {
-    // if (!this.state.playing && !this.state.gameOver) {
-      // this.saveGame()
-    // }
+    if (this.state.playing && !this.state.gameOver) {
+      this.saveGame()
+    }
     clearInterval(this.falling)
   }
 
   saveGame() {
       // AsyncStorage.setItem('game', JSON.stringify(this.state.grid))
+      console.log('SAVING GAME')
       AsyncStorage.multiSet([
+        ['inProgress', 'true'],
         ['game', JSON.stringify(this.state.grid)],
-        ['lines', JSON.stringify(this.state.lines)],
+        ['lines', JSON.stringify(this.lines)],
         ['tetrimo', this.tetrimo.type],
-        ['nextTetrimo', this.state.tetrimoQueue[0]]
+        ['nextTetrimo', this.state.tetrimoQueue[0].type],
+        // ['speed', JSON.stringify(this.loopInterval)]
       ])
       .catch(err => console.log('ERROR SAVING: ', err))
   }
 
   loadGame() {
+    console.log('LOADING GAME')
+    this.lines = this.props.score
+    this.setState({
+      grid: this.props.savedGame,
+      tetrimoQueue: [this.props.currentTetrimo, this.props.nextTetrimo],
+      playing: true
+    }, () => {
+      this.start()
+    })
 
   }
 

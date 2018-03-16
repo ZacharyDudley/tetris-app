@@ -7,20 +7,29 @@ import { Input, Preview, GameOver } from './Components'
 class Menu extends Component {
   constructor() {
     super()
-    this.continueGame = false
+    this.state = {
+      continue: true,
+      savedGame: [],
+      score: 0,
+      currentTetrimo: '',
+      nextTetrimo: ''
+    }
   }
 
   componentDidMount() {
     AsyncStorage.getItem('inProgress')
       .then(isSavedGame => {
-        this.continueGame = JSON.parse(isSavedGame)
-        if (isSavedGame) {
+        if (JSON.parse(isSavedGame)) {
+          console.log('FOUND GAME')
           AsyncStorage.multiGet(['game', 'lines', 'tetrimo', 'nextTetrimo'])
             .then(res => {
-              let game = JSON.parse(res[0][1])
-              let lines = JSON.parse(res[1][1])
-              let tetrimo = res[2][1]
-              let nextTetrimo = res[3][1]
+              this.setState({
+                continue: true,
+                savedGame: JSON.parse(res[0][1]),
+                score: JSON.parse(res[1][1]),
+                currentTetrimo: res[2][1],
+                nextTetrimo: res[3][1]
+              })
           })
         }
       })
@@ -28,6 +37,7 @@ class Menu extends Component {
   }
 
   render() {
+    console.log(this.state)
     return(
       <View style={ styles.container }>
         <Text>TETRIS</Text>
@@ -39,16 +49,16 @@ class Menu extends Component {
             })}}
         />
         {
-          this.continueGame &&
+          this.state.continueGame &&
           <Button
             title='continue'
             onPress={() => {
               this.props.navigation.navigate('Game', {
                 continue: true,
-                savedGame: game,
-                score: lines,
-                currentTetrimo: tetrimo,
-                nextTetrimo: nextTetrimo
+                savedGame: this.state.savedGame,
+                score: this.state.score,
+                currentTetrimo: this.state.currentTetrimo,
+                nextTetrimo: this.state.nextTetrimo
               })}}
           />
         }
