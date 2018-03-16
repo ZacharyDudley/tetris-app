@@ -17,7 +17,7 @@ class Input extends Component {
     }
     this.continue = params ? params.continue : false
     this.lines = params.score ? params.score : 0
-    this.loopInterval = params.speed ? params.speed : 1000
+    this.loopInterval = 1000
     this.tetrimo = {}
   }
 
@@ -43,7 +43,6 @@ class Input extends Component {
           ['lines', JSON.stringify(this.lines)],
           ['tetrimo', this.tetrimo.type],
           ['nextTetrimo', this.state.tetrimoQueue[0].type],
-          // ['speed', JSON.stringify(this.loopInterval)]
         ])
       })
       .catch(err => console.log('ERROR SAVING: ', err))
@@ -279,6 +278,8 @@ class Input extends Component {
   loop() {
     clearInterval(this.falling)
 
+    this.setSpeed()
+
     if (this.state.playing) {
       this.falling = setInterval(() => {
         this.moveTetrimoDown()
@@ -307,6 +308,10 @@ class Input extends Component {
       }
     }
     return grid
+  }
+
+  setSpeed() {
+    this.loopInterval = 1000 - (this.lines * 50)
   }
 
   checkLines(grid) {
