@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, Button, AsyncStorage } from 'react-native'
 import { StackNavigator } from 'react-navigation'
-import { Input, Preview, GameOver } from './Components'
+import { Input, Preview, GameOver, About } from './Components'
 
 
 class Menu extends Component {
@@ -60,6 +60,11 @@ class Menu extends Component {
               })}}
           />
         }
+        <Button
+          title='about'
+          onPress={() => {
+            this.props.navigation.navigate('Credits')}}
+        />
       </View>
     )
   }
@@ -93,6 +98,16 @@ class EndGame extends Component {
   }
 }
 
+class Credits extends Component {
+  render() {
+    return (
+      <View style={ styles.container }>
+        <About />
+      </View>
+    )
+  }
+}
+
 
 const RootStack = StackNavigator({
   Menu: {
@@ -103,6 +118,9 @@ const RootStack = StackNavigator({
   },
   EndGame: {
     screen: EndGame
+  },
+  Credits: {
+    screen: Credits
   }
 }, {
   initialRouteName: 'Menu'
