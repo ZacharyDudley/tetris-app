@@ -13,34 +13,23 @@ class Input extends Component {
       playing: false,
       gameOver: false
     }
+    this.continue = props.continue
     this.lines = 0
     this.loopInterval = 1000
     this.tetrimo = {}
   }
 
   componentDidMount() {
-    AsyncStorage.multiGet(['game', 'lines', 'tetrimo'])
-      .then(res => {
-        let game = JSON.parse(res[0][1])
-        let lines = JSON.parse(res[1][1])
-        let tetrimo = JSON.parse(res[2][1])
-
-        if (game) {
-          this.setState({grid: game}, () => {
-            this.lines = lines
-            this.tetrimo = tetrimo
-            this.start()
-          })
-        } else {
-          this.buildGameGrid()
-        }
-      })
-      .catch(err => console.log('ERROR LOADING: ', err))
+    if (this.continue) {
+      this.loadGame()
+    } else {
+      this.buildGameGrid()
+    }
   }
 
   componentWillUnmount() {
     // if (!this.state.playing && !this.state.gameOver) {
-      this.saveGame()
+      // this.saveGame()
     // }
     clearInterval(this.falling)
   }
@@ -50,9 +39,14 @@ class Input extends Component {
       AsyncStorage.multiSet([
         ['game', JSON.stringify(this.state.grid)],
         ['lines', JSON.stringify(this.state.lines)],
-        ['tetrimo', JSON.stringify(this.tetrimo)]
+        ['tetrimo', this.tetrimo.type],
+        ['nextTetrimo', this.state.tetrimoQueue[0]]
       ])
       .catch(err => console.log('ERROR SAVING: ', err))
+  }
+
+  loadGame() {
+
   }
 
   buildGameGrid() {
