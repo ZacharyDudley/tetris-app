@@ -269,6 +269,33 @@ class Input extends Component {
     }
   }
 
+  slamTetrimoDown() {
+    while (this.canTetrimoMoveDown()) {
+      this.down()
+    }
+      let newGrid = this.state.grid
+      let rotation = this.tetrimo.shape[this.tetrimo.rotation]
+
+      for (let blocks = 0; blocks < rotation.length; blocks++) {
+        newGrid[rotation[blocks][1]][rotation[blocks][0]] = 1
+      }
+
+      this.checkLines(newGrid)
+  }
+
+  doubleTap() {
+    const time = new Date().getTime()
+    const delay = time - this.lastPress
+
+    if (delay < 200) {
+      this.slamTetrimoDown()
+    } else {
+      this.moveTetrimoDown()
+    }
+
+    this.lastPress = time
+  }
+
   rotateTetrimo() {
     if (this.canTetrimoRotate()) {
       this.rotate()
@@ -382,22 +409,7 @@ class Input extends Component {
             style={styles.buttonDown}
             onPress={() => {
               if (this.state.playing) {
-                this.moveTetrimoDown()
-              }
-            }}
-            onLongPress={() => {
-              clearInterval(this.falling)
-              clearInterval(this.quickLoopInterval)
-              this.quickLoopInterval = setInterval(() => {
-                if (this.state.playing) {
-                  this.moveTetrimoDown()
-                }
-              }, 5)
-            }}
-            onPressOut={() => {
-              clearInterval(this.quickLoopInterval)
-              if (this.state.playing) {
-                this.loop()
+                this.doubleTap()
               }
             }}
             />
