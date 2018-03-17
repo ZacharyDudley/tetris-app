@@ -8,22 +8,38 @@ class GameOver extends Component {
     const score = params ? params.score : null
 
     return (
+      // <View>
       <View style={styles.container}>
-        <Text>GAME OVER</Text>
-        <Text>SCORE</Text>
-        <Text>{score}</Text>
+        <View style={styles.titleContainer}>
+          <Text style={styles.score}>SCORE</Text>
+          <Text style={styles.score}>{score}</Text>
 
-        <Button
-        title='new game'
-        onPress={() => {
-          this.props.navigation.navigate('Game')}}
-        />
+          <Text style={styles.title}>
+            GAME
+          </Text>
+          <Text style={styles.title}>
+            OVER
+          </Text>
+        </View>
 
-        <Button
-        title='menu'
-        onPress={() => {
-          this.props.navigation.navigate('Menu')}}
-        />
+
+        <View style={styles.buttonContainer}>
+          <Button
+          title='play'
+          color='#000000'
+          onPress={() => {
+            this.props.navigation.navigate('Game', {
+              continue: false
+            })}}
+          />
+
+          <Button
+          title='menu'
+          color='#000000'
+          onPress={() => {
+            this.props.navigation.navigate('Menu')}}
+          />
+      </View>
 
       </View>
     )
@@ -35,6 +51,24 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  titleContainer: {
+    flex: 1,
+    width: '70%',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  title: {
+    fontSize: 100,
+    fontWeight: '100'
+  },
+  buttonContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    width: '70%',
+  },
+  score: {
+    fontWeight: '700'
   },
 })
 

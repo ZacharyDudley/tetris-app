@@ -47,7 +47,7 @@ class Menu extends Component {
         <View style={styles.buttonContainer}>
           <Button
             title='play'
-            style={styles.button}
+            color='#000000'
             onPress={() => {
               this.props.navigation.navigate('Game', {
                 continue: false
@@ -57,7 +57,7 @@ class Menu extends Component {
             this.state.continue &&
             <Button
               title='continue'
-              style={styles.button}
+              color='#000000'
               onPress={() => {
                 this.props.navigation.navigate('Game', {
                   continue: true,
@@ -70,9 +70,15 @@ class Menu extends Component {
           }
           <Button
             title='about'
-            style={styles.button}
+            color='#000000'
             onPress={() => {
               this.props.navigation.navigate('Credits')}}
+          />
+          <Button
+            title='end'
+            color='#000000'
+            onPress={() => {
+              this.props.navigation.navigate('EndGame')}}
           />
         </View>
       </View>
@@ -101,9 +107,7 @@ class Game extends Component {
 class EndGame extends Component {
   render() {
     return(
-      <View style={ styles.container }>
         <GameOver />
-      </View>
     )
   }
 }
@@ -127,7 +131,10 @@ const RootStack = StackNavigator({
     screen: Game
   },
   EndGame: {
-    screen: EndGame
+    screen: EndGame,
+    navigationOptions: {
+      headerLeft: null
+    }
   },
   Credits: {
     screen: Credits
@@ -144,25 +151,39 @@ export default class App extends Component {
 
 
 const styles = StyleSheet.create({
+  // container: {
+  //   flex: 1,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  // titleContainer: {
+  //   width: '70%',
+  // },
+  // title: {
+  //   fontSize: 100,
+  //   fontWeight: '100'
+  // },
+  // buttonContainer: {
+  //   alignItems: 'flex-end',
+  //   width: '70%',
+  // },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
   titleContainer: {
-    // alignItems: 'flex-end',
-    // width: '70%'
-  },
-  buttonContainer: {
-    alignItems: 'flex-end',
-    width: '70%'
-  },
-  button: {
-
+    flex: 1,
+    width: '70%',
+    justifyContent: 'flex-end',
   },
   title: {
     fontSize: 100,
     fontWeight: '100'
-  }
+  },
+  buttonContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+    width: '70%',
+  },
 })
