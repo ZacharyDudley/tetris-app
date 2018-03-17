@@ -74,12 +74,6 @@ class Menu extends Component {
             onPress={() => {
               this.props.navigation.navigate('Credits')}}
           />
-          <Button
-            title='end'
-            color='#000000'
-            onPress={() => {
-              this.props.navigation.navigate('EndGame')}}
-          />
         </View>
       </View>
     )
