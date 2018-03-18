@@ -3,6 +3,7 @@
     "sdkVersion": "25.0.0",
     "name": "Tetris",
     "slug": "tetris",
+    "privacy": "public",
     "orientation": "portrait",
     "icon": "./TetrisIcon.png",
     "splash": {
