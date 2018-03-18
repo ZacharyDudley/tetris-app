@@ -1,20 +1,12 @@
 {
   "expo": {
-    "name": "Tetris",
-    "icon": "./TetrisIcon.png",
-    "version": "1.0.0",
-    "slug": "tetris",
-    "privacy": "public",
-    "orientation": "portrait",
     "sdkVersion": "25.0.0",
+    "name": "Tetris",
+    "slug": "tetris",
+    "orientation": "portrait",
+    "icon": "./TetrisIcon.png",
     "splash": {
       "image": "./TetrisSplash.png"
-    },
-    "ios": {
-      "bundleIdentifier": "com.zacharydfriedman.tetris"
-    },
-    "android": {
-      "package": "com.zacharydfriedman.tetris"
     }
   }
 }

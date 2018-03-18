@@ -8,7 +8,7 @@ export default class About extends Component {
 
       <View style={styles.textContainer}>
       {
-        // <Text>brought to you by</Text>
+        <Text>brought to you by:</Text>
       }
         <Text style={styles.name}>
           ZACHARY DUDLEY FRIEDMAN

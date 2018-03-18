@@ -1,7 +1,6 @@
 {
   "presets": [
-    "babel-preset-expo",
-    "stage-3"
+    "babel-preset-expo"
   ],
   "env": {
     "development": {
